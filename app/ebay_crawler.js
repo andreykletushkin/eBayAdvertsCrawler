@@ -8,7 +8,7 @@ const fs = require('node:fs');
   await ebaylib.skipPromotionAdverts(initialPage);
   let theTextOfInitialAdvert = await ebaylib.grabTheTextOfLatestAdvert(initialPage);
 
-  let newAdverts = ebaylib.readVisitedAdverts('test.txt');
+  let newAdverts = ebaylib.readVisitedAdverts('oldadverts.txt');
   newAdverts = newAdverts === undefined ? [] : newAdverts;
 
   // reiteretive parsing of the adverts page

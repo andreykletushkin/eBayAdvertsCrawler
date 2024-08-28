@@ -1,25 +1,16 @@
 const fs = require('node:fs');
 const playwright = require('playwright');
 
-const url = 'https://www.kleinanzeigen.de/s-zu-verschenken-tauschen/thueringen/c272l3548'
-const ebayUrl = 'https://www.kleinanzeigen.de/s-wohnung-mieten/bayern/anzeige:angebote/c203l5510+wohnung_mieten.zimmer_d:1%2C2'
+const ebayUrl = 'https://www.kleinanzeigen.de/s-wohnung-mieten/jena/anzeige:angebote/c203l3770+wohnung_mieten.zimmer_d:1%2C2'
 const browserName = 'msedge'
 const timeoutBetweenPagesReload = 1000;
-let numberOfSkippedAdverts = 0;
-
+var numberOfSkippedAdverts = 0
 async function buildBrowser() {
   const userDataDir = 'cookies';
    return await playwright.chromium.launchPersistentContext(userDataDir, {
-     headless: false,
+     headless: true,
      channel: browserName,
    });
-
-   //return await playwright.chromium.launch({
-    //headless: false,
-    //channel: browserName,
- // });
-
-  //return await playwright.chromium.launch(headless=false);
 }
 
 async function clickFind(page) {
@@ -30,12 +21,11 @@ async function clickFind(page) {
 
 async function handleLatestAdvert(browser, page, theTextOfLatestAdvert, newAdverts) {
   let theTextOfCurrentAdvert = await grabTheTextOfLatestAdvert(page);  
-  console.log("current advert:"+ theTextOfCurrentAdvert)
    if (theTextOfLatestAdvert !== theTextOfCurrentAdvert) {
      if (!newAdverts.includes(theTextOfCurrentAdvert)) {
        newAdverts.push(theTextOfCurrentAdvert);
        console.log('new advert:' + theTextOfCurrentAdvert);
-       fs.writeFileSync('test.txt', theTextOfCurrentAdvert + '\n', { flag: 'a+' });   
+       fs.writeFileSync('oldadverts.txt', theTextOfCurrentAdvert + '\n', { flag: 'a+' });   
        try {
          await openTheAdvertPage(browser, page, theTextOfCurrentAdvert);
        } catch (error) {
@@ -82,7 +72,6 @@ async function openTheAdvertPage(browser,page,theTextOfCurrentAdvert) {
   
   console.log(user.trim()+":"+ new Date().toLocaleTimeString())
   await newPage.close();
-  return {adverdlocation:location, adverduser:user}
 }
 
 const grabTheTextOfLatestAdvert = async (page) => await page.locator(xpath = 'a[class=\'ellipsis\']').nth(numberOfSkippedAdverts).textContent();
