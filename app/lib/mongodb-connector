@@ -1,0 +1,21 @@
+const { MongoClient } = require('mongodb');
+
+
+(async () => {
+    const client = new MongoClient('mongodb://127.0.0.1:27017?retryWrites=true&w=majority');
+    client.connect().then(db =>{
+        //console.log(db)
+        var dbo = db.db("mydb")
+        
+        dbo.createCollection("adverts", function(err,res){
+            if(err) throw err;
+            console.log("Collection created!");
+            db.close();
+        });
+    });
+})();
+
+
+
+
+

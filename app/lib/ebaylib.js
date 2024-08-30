@@ -26,11 +26,11 @@ async function handleLatestAdvert(browser, page, theTextOfLatestAdvert, oldAdver
      if (!oldAdvertsFromPreviouseSession.includes(theTextOfCurrentAdvert)) {
       oldAdvertsFromPreviouseSession.push(theTextOfCurrentAdvert);
        console.log('new advert:' + theTextOfCurrentAdvert);
-       fs.writeFileSync('oldadverts.txt', oldAdvertsFromPreviouseSession + '\n', { flag: 'a+' });   
+       fs.writeFileSync('oldadverts.txt', theTextOfCurrentAdvert + '\n', { flag: 'a+' });   
        try {
          await openTheAdvertPage(browser, page, theTextOfCurrentAdvert);
        } catch (error) {
-         console.log('looks like the new advert gone let"s open it again:'+error);
+         console.log(`looks like the new advert gone let"s open it again:`+error);
          oldAdvertsFromPreviouseSession.pop();
          await handleLatestAdvert(browser, page, theTextOfLatestAdvert, oldAdvertsFromPreviouseSession);
        }
