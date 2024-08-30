@@ -1,14 +1,15 @@
 const fs = require('node:fs');
 const playwright = require('playwright');
+const dotenv = require('dotenv').config();
+const ebayUrl = process.env.EBAY_URL;
+const browserName = process.env.BROWSER
+const pageWaitTimeout = Number(process.env.PAGE_TIMOUT);
 
-const ebayUrl = 'https://www.kleinanzeigen.de/s-wohnung-mieten/jena/anzeige:angebote/c203l3770+wohnung_mieten.zimmer_d:1%2C2'
-const browserName = 'msedge'
-const timeoutBetweenPagesReload = 1000;
 var numberOfSkippedAdverts = 0
-async function buildBrowser() {
+async function openBrowser() {
   const userDataDir = 'cookies';
    return await playwright.chromium.launchPersistentContext(userDataDir, {
-     headless: true,
+     headless: false,
      channel: browserName,
    });
 }
@@ -19,19 +20,19 @@ async function clickFind(page) {
   return page;
 }
 
-async function handleLatestAdvert(browser, page, theTextOfLatestAdvert, newAdverts) {
+async function handleLatestAdvert(browser, page, theTextOfLatestAdvert, oldAdvertsFromPreviouseSession) {
   let theTextOfCurrentAdvert = await grabTheTextOfLatestAdvert(page);  
    if (theTextOfLatestAdvert !== theTextOfCurrentAdvert) {
      if (!newAdverts.includes(theTextOfCurrentAdvert)) {
        newAdverts.push(theTextOfCurrentAdvert);
        console.log('new advert:' + theTextOfCurrentAdvert);
-       fs.writeFileSync('oldadverts.txt', theTextOfCurrentAdvert + '\n', { flag: 'a+' });   
+       fs.writeFileSync('oldadverts.txt', oldAdvertsFromPreviouseSession + '\n', { flag: 'a+' });   
        try {
          await openTheAdvertPage(browser, page, theTextOfCurrentAdvert);
        } catch (error) {
          console.log('looks like the new advert gone let"s open it again:'+error);
          newAdverts.pop();
-         await handleLatestAdvert(browser, page, theTextOfLatestAdvert, newAdverts);
+         await handleLatestAdvert(browser, page, theTextOfLatestAdvert, oldAdvertsFromPreviouseSession);
        }
      }
    }
@@ -39,10 +40,10 @@ async function handleLatestAdvert(browser, page, theTextOfLatestAdvert, newAdver
 }
 
 
-async function createPageForEbay(browser) {
+async function openPage(browser) {
   const page = await browser.newPage()
   await page.goto(ebayUrl);
-  await page.waitForTimeout(timeoutBetweenPagesReload);
+  await page.waitForTimeout(pageWaitTimeout);
   return page;
 }
 
@@ -81,8 +82,8 @@ const grabLatestTimestampOfAdvertOnPage = async (page) => await page.locator(xpa
 const readVisitedAdverts = (path) => { if (fs.existsSync(path)) { return fs.readFileSync(path).toString().split("\n") } };
 
 
-module.exports.buildBrowser = buildBrowser;
-module.exports.createPageForEbay = createPageForEbay;
+module.exports.openBrowser = openBrowser;
+module.exports.openPage = openPage;
 module.exports.grabTheTextOfLatestAdvert = grabTheTextOfLatestAdvert;
 module.exports.grabLastAdvertLinkOnThePage = grabLastAdvertLinkOnThePage;
 module.exports.grabLatestTimestampOfAdvertOnPage = grabLatestTimestampOfAdvertOnPage;
