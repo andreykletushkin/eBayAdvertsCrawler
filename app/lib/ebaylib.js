@@ -23,15 +23,15 @@ async function clickFind(page) {
 async function handleLatestAdvert(browser, page, theTextOfLatestAdvert, oldAdvertsFromPreviouseSession) {
   let theTextOfCurrentAdvert = await grabTheTextOfLatestAdvert(page);  
    if (theTextOfLatestAdvert !== theTextOfCurrentAdvert) {
-     if (!newAdverts.includes(theTextOfCurrentAdvert)) {
-       newAdverts.push(theTextOfCurrentAdvert);
+     if (!oldAdvertsFromPreviouseSession.includes(theTextOfCurrentAdvert)) {
+      oldAdvertsFromPreviouseSession.push(theTextOfCurrentAdvert);
        console.log('new advert:' + theTextOfCurrentAdvert);
        fs.writeFileSync('oldadverts.txt', oldAdvertsFromPreviouseSession + '\n', { flag: 'a+' });   
        try {
          await openTheAdvertPage(browser, page, theTextOfCurrentAdvert);
        } catch (error) {
          console.log('looks like the new advert gone let"s open it again:'+error);
-         newAdverts.pop();
+         oldAdvertsFromPreviouseSession.pop();
          await handleLatestAdvert(browser, page, theTextOfLatestAdvert, oldAdvertsFromPreviouseSession);
        }
      }
@@ -69,7 +69,7 @@ async function openTheAdvertPage(browser,page,theTextOfCurrentAdvert) {
   const price = await newPage.locator(xpath = 'h2[class="boxedarticle--price"]').nth(0).textContent();
   
   console.log(location.trim());
-  console.log(price);
+  console.log(pric.trime);
   
   console.log(user.trim()+":"+ new Date().toLocaleTimeString())
   await newPage.close();
