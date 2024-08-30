@@ -69,7 +69,7 @@ async function openTheAdvertPage(browser,page,theTextOfCurrentAdvert) {
   const price = await newPage.locator(xpath = 'h2[class="boxedarticle--price"]').nth(0).textContent();
   
   console.log(location.trim());
-  console.log(pric.trime);
+  console.log(price.trime);
   
   console.log(user.trim()+":"+ new Date().toLocaleTimeString())
   await newPage.close();
