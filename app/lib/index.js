@@ -1,6 +1,7 @@
 exports.openBrowser = require('./browserlib').openBrowser;
 exports.openPage = require('./browserlib').openPage;
 exports.handleCookiesAcceptWindow = require('./browserlib').handleCookiesAcceptWindow;
+exports.closeBrowserIfNeeded = require('./browserlib').closeBrowserIfNeeded
 
 exports.clickFind = require('./advlisthandlers').clickFind;
 exports.skipPromotionAdverts = require('./advlisthandlers').skipPromotionAdverts;

@@ -21,7 +21,7 @@ async function openTheAdvertPage(browser, page, theTextOfCurrentAdvert) {
         newAdvert = page.getByText(theTextOfCurrentAdvert).nth(0),
         newAdvert.click({ modifiers: ['Control', 'Shift'] })
         ])
-        console.log(theTextOfCurrentAdvert);
+    
 
         await adv.waitForLoadState();
         const user = await adv.locator(xpath = 'span[class=\'iconlist-text\'] >> span').nth(0).textContent();

@@ -22,7 +22,5 @@ async function openMissedAdverts(theTextOfInitialAdvert, lastVisitedAdvert, page
   }
 }
 
-
-
 module.exports.readVisitedAdverts = readVisitedAdverts;
 module.exports.openMissedAdverts = openMissedAdverts;
