@@ -1,25 +1,27 @@
-const playwright = require('playwright');
 const dotenv = require('dotenv').config();
-const ebaylib = require('./lib/ebaylib.js');
-const fs = require('node:fs');
+const ebaylib = require('./lib/index');
 const pageWaitTimeout = Number(process.env.PAGE_TIMOUT);
 
 (async () => {
   // initial parsing of the adverts
-
   var browser = await ebaylib.openBrowser();
   const initialPage = await ebaylib.openPage(browser);
+  await ebaylib.handleCookiesAcceptWindow(initialPage);
   await ebaylib.skipPromotionAdverts(initialPage);
-  let theTextOfInitialAdvert = await ebaylib.grabTheTextOfLatestAdvert(initialPage);
-
-  let oldAdvertsFromPreviouseSession = ebaylib.readVisitedAdverts('oldadverts.txt');
-  oldAdvertsFromPreviouseSession = oldAdvertsFromPreviouseSession === undefined ? [] : oldAdvertsFromPreviouseSession;
-
-  // reiteretive parsing of the adverts page
+  let theTextOfInitialAdvert = await ebaylib.getTheTextOfLatestAdvert(initialPage);
+  
+  const visitedAdverts = Boolean(process.env.SUPPORT_MONGODB) === true ? await ebaylib.readVisitedAdverts() : [];
+  const lastVisitedAdvert = visitedAdverts[visitedAdverts.length-1];
+  console.log(lastVisitedAdvert)
+  visitedAdverts.push(theTextOfInitialAdvert.trim());
+  
+  await ebaylib.openMissedAdverts(theTextOfInitialAdvert, lastVisitedAdvert, initialPage, browser)
+  
+  //reiteretive parsing of the adverts page
   setInterval(async () => {
-    ebaylib.openPage(browser)
-      .then(page => ebaylib.clickFind(page))
-      .then(page => ebaylib.handleLatestAdvert(browser, page, theTextOfInitialAdvert, oldAdvertsFromPreviouseSession))
-      .then(page => page.close())
+   ebaylib.openPage(browser)
+     .then(page => ebaylib.clickFind(page))
+     .then(page => ebaylib.handleLatestAdvert(browser, page, visitedAdverts))
+     .then(page => page.close())
   }, process.env.PAGE_LOAD_INTERVAL)
 })();
