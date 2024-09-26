@@ -1,4 +1,4 @@
-import { openBrowser } from '../lib/browserlib.js';
+import { openBrowser } from '../lib/browserhelper.js';
 import fs from 'fs'
 import 'dotenv/config'
 (async ()=>{
