@@ -1,58 +1,28 @@
-const advlib = require('./index');
-const mongoClient = require('./mongodb-connector');
 
+async function parseAdvertPage(adv) {
+	await adv.waitForSelector('p[id="viewad-description-text"]');
+	const user = await adv.locator('span[class=\'iconlist-text\'] >> span').nth(0).textContent();
+	const location = await adv.locator('span[id="viewad-locality"]').nth(0).textContent();
+	const price = await adv.locator('h2[class="boxedarticle--price"]').nth(0).textContent();
+	const description = await adv.locator('p[id="viewad-description-text"]').nth(0).textContent();
 
-async function handleLatestAdvert(browser, page, visitedAdverts) {
-    let theTextOfCurrentAdvert = await advlib.getTheTextOfLatestAdvert(page);
-    if (theTextOfCurrentAdvert != visitedAdverts[visitedAdverts.lenght - 1]) {
-        if (!visitedAdverts.includes(theTextOfCurrentAdvert)) {
-            visitedAdverts.push(theTextOfCurrentAdvert.trim());
-            console.log('new advert:' + theTextOfCurrentAdvert);
-            await openTheAdvertPage(browser, page, theTextOfCurrentAdvert);
-        }
-    }
-    return page;
+	return {
+		description: description.trim(),
+		owner: user.trim(),
+		location: location.trim(),
+		price: price.trim()
+	};
 }
 
-async function openTheAdvertPage(browser, page, theTextOfCurrentAdvert) {    
-    try {
-        const [adv] = await Promise.all([
-        browser.waitForEvent('page', { timeout: 5000 }),
-        newAdvert = page.getByText(theTextOfCurrentAdvert).nth(0),
-        newAdvert.click({ modifiers: ['Control', 'Shift'] })
-        ])
-    
-
-        await adv.waitForLoadState();
-        const user = await adv.locator(xpath = 'span[class=\'iconlist-text\'] >> span').nth(0).textContent();
-        const location = await adv.locator(xpath = 'span[id="viewad-locality"]').nth(0).textContent();
-        const price = await adv.locator(xpath = 'h2[class="boxedarticle--price"]').nth(0).textContent();
-        const description = await adv.locator(xpath = 'p[id="viewad-description-text"]').nth(0).textContent();
-
-        const advert = {
-            date: new Date().toLocaleTimeString(),
-            label: theTextOfCurrentAdvert.trim(),
-            description: description.trim(),
-            owner: user.trim(),
-            location: location.trim(),
-            price: price.trim()
-        };
-
-        if(process.env.SUPPORT_MONGODB) {
-            await mongoClient.insert(advert);
-        }
-    
-        await adv.close();
-    } catch (error) {
-        console.log(error);
-        setTimeout(async () => {
-            console.log('open the page one more time');
-            page = await advlib.openPage(browser);
-            await openTheAdvertPage(browser, page, theTextOfCurrentAdvert);
-        }, 20000)
-
-    }
+async function sendMessage(adv) {
+	const selector = await adv.isVisible('select[name="currentSchufaInformation"]');
+	if (selector) {
+		await adv.locator('select[name="currentSchufaInformation"]').nth(0).selectOption({ value: 'AVAILABLE' })
+	}
+	await adv.getByRole('textbox', { name: 'Schreibe eine freundliche' }).fill(process.env.MESSAGE);
+	await adv.getByRole('button', { name: 'Nachricht senden' }).nth(0).click();
+	await adv.waitForTimeout(5000);
+	//await adv.screenshot({path:image.png})
 }
 
-module.exports.handleLatestAdvert = handleLatestAdvert;
-module.exports.openTheAdvertPage = openTheAdvertPage;
+export { parseAdvertPage, sendMessage }

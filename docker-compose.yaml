@@ -2,23 +2,31 @@ version: "3.1"
 
 services:
 
-  mongo:
+  ebaycrawler:
+    ports:
+      - 4000:4000
     build:
-        context: mongo
-        dockerfile: Dockerfile
-    image: mongorpl
-    hostname: mongo
+      dockerfile: Dockerfile
+
+
+  chrome-browser:
+    image: tobesocial/playwright-browser
+    ports:
+      - 3000:3000
+    environment:
+      - FLAG__debug_print=false
+      - FLAG_chromium__allow_sandbox_debugging=false
+    hostname: chrome-browser
+
+
+  mongo:
+    image: mongo:4.4.6
     restart: always
     ports:
       - "27017:27017"
     volumes:
-      - mongo-data:/data/db
-
-  mongo-express:
-    image: mongo-express
-    restart: always
-    ports:
-      - 8081:8081
+      - mongo-volume:/data/db
+    command: mongod --quiet --logpath /dev/null 
 
 volumes:
-  mongo-data:
+  mongo-volume:
