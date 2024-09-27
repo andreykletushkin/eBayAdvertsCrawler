@@ -1,31 +1,58 @@
-## Automatische Anzeige Handler für das Portal Ebay Kleinanzeige 
-Unterstützt Lesen, Speichern und Schicken die Nachricht an die Vermieter
-Es ist nicht der Geheim, dass die Wohnung in Deutschland sehr schwere zu finden
-Die Anwendungen kann das Problem endlich löschen. Oder mindestens helfen
-Die allgemeine Idee ist die neue Anzeige am schnellsten behandeln und bemerken
+# Automatischer Anzeige-Handler für das Portal **eBay Kleinanzeigen**
 
-## Application Erstellen und Laufen
+Die Anwendung ermöglicht das automatische Lesen, Speichern und Versenden von Nachrichten an Vermieter auf **eBay Kleinanzeigen**.  
+Es ist kein Geheimnis, dass es in Deutschland sehr schwierig ist, eine passende Wohnung zu finden. Diese Anwendung hilft Ihnen dabei, das Problem zu lösen oder zumindest zu minimieren, indem neue Anzeigen schnell erfasst und behandelt werden.
 
-Die Anwendung konnte sich als Docker erstellen. Dieser Wege is empfelenswert zu anwenden
-Wann möchten Sie die Nachricht shicken, das folgenden Shritten sollten Sie erfühlen um cookies richtige behandeln bevor docker vorbereiten:<br>
-1.Öffnen die Seite https://www.kleinanzeigen.de/ in Google Chrome <br>
-2.Login in portal unter Ihre Berechigt Auskunft <br>
-3.In Task-Manager(Windows) löschen Chrome process auf. In linux: pkill chrome <br>
-4.cd in ordner app\login_session. verändern file .env <br>
-FOLDER_WITH_COOKIES = 'C:\\Users\\username\\AppData\\Local\\Google\\Chrome\\User Data' <br>
-Das ist Ordner in den cookies von Chrome gespeichert werden in Windows 10,11. <br>
-Sie sollen username mit Ihre username verändern<br>
-In Ubuntu oder Mac die Ordner Weg sieht anders aus, z.B:<br>
-~/.config/google-chrome/Default/Cookies
-Bitte guck mal in Dokumentation des OS der richtige Weg <br>
-5.Laufen command: node .\prepare_login_cookies.js <br>
-Es wird file nennt cookies erstellt <br>
-Dieser file in playwright benutzen werden um die Nachricht schicken<br>
+## Anforderungen an Software und Hardware
 
-Docker einsetzen <br>
+| Komponente         | Version/Details                          |
+|--------------------|------------------------------------------|
+| **Node.js**        | v20.17.0                                 |
+| **Arbeitsspeicher**| Mindestens 4 GB (empfohlen: 8 GB)        |
+| **Browser**        | Google Chrome                            | 
+| **Kontainer**      | Docker                                   |
 
-Laufen kommand: docker compose up <br>
-Es wird drei Docker Containers: <br>
-Mongo - noSQL databanken <br>
-Chrome-browser - browser in den die Nachricht geschikt <br>
-Ebaycrawler- NodeJS anwendungen händelt eBay-Kleineinzeigen portal <br>
+## Anwendung erstellen und starten
+
+Die Anwendung kann als Docker-Container bereitgestellt werden. Dies ist der empfohlene Weg, um die Anwendung auszuführen.
+
+### Voraussetzungen für das Versenden von Nachrichten:
+
+Bevor Sie die Docker-Umgebung aufsetzen, müssen Sie die folgenden Schritte ausführen, um die Cookies korrekt zu behandeln:
+
+1. Öffnen Sie die Website [eBay Kleinanzeigen](https://www.kleinanzeigen.de/) in Google Chrome.
+2. Melden Sie sich mit Ihren Zugangsdaten im Portal an.
+3. Beenden Sie den Chrome-Browser-Prozess:
+    - **Windows**: Task-Manager öffnen und den Chrome-Prozess beenden.
+    - **Linux**: `pkill chrome` im Terminal ausführen.
+4. Wechseln Sie in das Verzeichnis `app/login_session` und öffnen Sie die Datei `.env`. Passen Sie den Pfad zur Cookie-Datei wie folgt an:
+
+   ```env
+   FOLDER_WITH_COOKIES = 'C:\\Users\\username\\AppData\\Local\\Google\\Chrome\\User Data'
+   ```
+   
+   Dies ist der Pfad, in dem Chrome die Cookies unter Windows 10/11 speichert. Ersetzen Sie username durch Ihren tatsächlichen Benutzernamen.
+   * In Ubuntu oder MacOS sieht der Pfad anders aus, z.B.:
+
+   ```env
+   ~/.config/google-chrome/Default/Cookies
+   ```
+   Bitte konsultieren Sie die Dokumentation Ihres Betriebssystems, um den richtigen Pfad zu finden.
+5. Führen Sie folgenden Befehl aus:
+
+   ```env
+   node .\prepare_login_cookies.js
+   ```
+   Dadurch wird eine Datei namens cookies erstellt. Diese Datei wird später von playwright verwendet, um sich automatisch anzumelden und Nachrichten zu versenden.
+
+### Anwendung mit Docker ausführen
+Um die Anwendung mit Docker zu starten, führen Sie den folgenden Befehl aus:
+  ```env
+  docker compose up
+   ```
+Es werden drei Docker-Container gestartet:
+
+- MongoDB: NoSQL-Datenbank, um Daten wie Nachrichten und Anzeigen zu speichern.
+- Chrome-Browser: Browser-Container, in dem die Nachrichten gesendet werden.
+- BayCrawler: Node.js-Anwendung, die das eBay Kleinanzeigen-Portal crawlt und Nachrichten automatisiert versendet.
+
