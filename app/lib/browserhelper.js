@@ -10,15 +10,17 @@ async function openBrowser() {
 
 	if (process.env.USE_NATIVE_BROWSER === 'true') {
 		return await chromium.launchPersistentContext(process.env.FOLDER_WITH_COOKIES, {
-			headless: true,
+			headless: false,
 			channel: 'chrome'
 		})
 	}
 
-	const browser = await chromium.connect({
-		wsEndpoint: 'ws://' + process.env.BROWSER_ADDRESS + '/playwright',
-	});
+	//const browser = await chromium.connect({
+	//	wsEndpoint: 'ws://' + process.env.BROWSER_ADDRESS + '/playwright',
+	//});
+	
 
+	const browser = await chromium.launch({headless:false});
 	const context = await browser.newContext()
 	
 	if (process.env.USE_LOGIN_SESSION === 'true') {
@@ -34,7 +36,7 @@ async function closePopUpWindow(page) {
 			await page.getByText('Alle akzeptieren').click();
 		}
 
-		if (await page.getByText('Einverstanden').isVisible()) {
+		if (await page.getByText('Einverstanden').nth(0).isVisible()) {
 			await page.getByText('Einverstanden').click();
 		}
 
