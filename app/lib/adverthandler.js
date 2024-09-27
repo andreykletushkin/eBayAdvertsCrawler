@@ -21,7 +21,7 @@ async function sendMessage(adv) {
 	}
 	await adv.getByRole('textbox', { name: 'Schreibe eine freundliche' }).fill(process.env.MESSAGE);
 	await adv.getByRole('button', { name: 'Nachricht senden' }).nth(0).click();
-	await adv.waitForTimeout(5000);
+	await adv.waitForTimeout(20000);
 	//await adv.screenshot({path:image.png})
 }
 

@@ -15,12 +15,12 @@ async function openBrowser() {
 		})
 	}
 
-	//const browser = await chromium.connect({
-	//	wsEndpoint: 'ws://' + process.env.BROWSER_ADDRESS + '/playwright',
-	//});
+	const browser = await chromium.connect({
+		wsEndpoint: 'ws://' + process.env.BROWSER_ADDRESS + '/playwright',
+	});
 	
 
-	const browser = await chromium.launch({headless:false});
+	//const browser = await chromium.launch({headless:true});
 	const context = await browser.newContext()
 	
 	if (process.env.USE_LOGIN_SESSION === 'true') {
