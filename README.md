@@ -54,5 +54,5 @@ Es werden drei Docker-Container gestartet:
 
 - MongoDB: NoSQL-Datenbank, um Daten wie Nachrichten und Anzeigen zu speichern.
 - Chrome-Browser: Browser-Container, in dem die Nachrichten gesendet werden.
-- BayCrawler: Node.js-Anwendung, die das eBay Kleinanzeigen-Portal crawlt und Nachrichten automatisiert versendet.
+- eBayCrawler: Node.js-Anwendung, die das eBay Kleinanzeigen-Portal crawlt und Nachrichten automatisiert versendet.
 
