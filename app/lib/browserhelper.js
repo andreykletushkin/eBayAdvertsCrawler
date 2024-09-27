@@ -10,7 +10,7 @@ async function openBrowser() {
 
 	if (process.env.USE_NATIVE_BROWSER === 'true') {
 		return await chromium.launchPersistentContext(process.env.FOLDER_WITH_COOKIES, {
-			headless: false,
+			headless: true,
 			channel: 'chrome'
 		})
 	}
@@ -19,8 +19,6 @@ async function openBrowser() {
 		wsEndpoint: 'ws://' + process.env.BROWSER_ADDRESS + '/playwright',
 	});
 	
-
-	//const browser = await chromium.launch({headless:true});
 	const context = await browser.newContext()
 	
 	if (process.env.USE_LOGIN_SESSION === 'true') {
