@@ -12,6 +12,19 @@ Es ist kein Geheimnis, dass es in Deutschland sehr schwierig ist, eine passende 
 | **Browser**        | Google Chrome                            | 
 | **Kontainer**      | Docker                                   |
 
+## Konfiguration
+
+Bevor die Anwendung gestartet wird, muss sie entsprechend konfiguriert werden. In der folgenden Tabelle sind die Parameter aufgeführt, die angepasst werden müssen:
+
+| Parameter                          | Beschreibung                                                                                       |
+|------------------------------------|---------------------------------------------------------------------------------------------------|
+| **FILTER_CITY**                    | Die Stadt, in der nach einer Wohnung gesucht werden soll                                           |
+| **FILTER_APPARTMENT_PARAMETERS**   | Wohnungskriterien (z.B. 1 Zimmer, 2 Zimmer usw.). Diese Parameter können Sie in der Browser-Adressleiste einsehen, nachdem Sie die Filtereinstellungen auf dem Portal vorgenommen haben. |
+
+Sowohl die `.env`- als auch die `.env-docker`-Datei sollten entsprechend angepasst werden.
+
+                            
+
 ## Anwendung erstellen und starten
 
 Die Anwendung kann als Docker-Container bereitgestellt werden. Dies ist der empfohlene Weg, um die Anwendung auszuführen.
