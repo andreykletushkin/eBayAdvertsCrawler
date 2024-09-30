@@ -2,8 +2,6 @@ import Crawler from "crawler";
 import { eventEmitter } from "./events.js";
 import { find } from "./mongodb-connector.js";
 
-
-
 let adverts = []
 const url = process.env.EBAY_URL + 
 process.env.FILTER_CITY + 
