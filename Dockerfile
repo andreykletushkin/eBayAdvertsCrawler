@@ -5,4 +5,4 @@ COPY --chown=node:node package*.json ./
 USER node
 RUN npm install
 COPY --chown=node:node . .
-CMD [ "node", "--env-file=.env-docker","app/ebay_crawler.js" ]
+CMD [ "node", "--env-file=.env-docker", "app/ebay_crawler.js"]

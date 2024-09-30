@@ -3,7 +3,13 @@ import { eventEmitter } from "./events.js";
 import { find } from "./mongodb-connector.js";
 
 
+
 let adverts = []
+const url = process.env.EBAY_URL + 
+process.env.FILTER_CITY + 
+process.env.FILTER_APPARTMENT_PARAMETERS
+
+console.log(url)
 
 const c = new Crawler({
 	rateLimit: 5000,
@@ -28,18 +34,8 @@ const c = new Crawler({
 			let newAdverts = currentAdverts.filter(cAdv =>
 				!advertsFromPreviousSession.map(oldAdv => oldAdv.title)
 					.includes(cAdv.title));
-
-			if (newAdverts.length > 0) {
-				if ((await find(newAdverts[0].title)) === null) {
-					eventEmitter.emit('newadvert', {
-						'title': newAdverts[0].title,
-						'link': 'https://www.kleinanzeigen.de/' + newAdverts[0].link,
-						'time': newAdverts[0].time
-					});
-				}
-			}
 	
-/*			newAdverts.forEach(async (newAdv) => {
+			newAdverts.forEach(async (newAdv) => {
 							if ((await find(newAdv.title)) === null) {
 								eventEmitter.emit('newadvert', {
 									'title': newAdv.title,
@@ -47,7 +43,7 @@ const c = new Crawler({
 									'time': newAdv.time
 								});
 							}
-						});*/
+						});
 			adverts = currentAdverts;
 		}
 		done();
@@ -55,8 +51,9 @@ const c = new Crawler({
 });
 
 function iterateAdverts() {
+	 
 	c.add({
-		url: process.env.EBAY_URL,
+		url: url,
 		userParams: {
 			oldAdverts: adverts
 		},

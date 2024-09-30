@@ -20,7 +20,9 @@ eventEmitter.on('newadvert', async (newadvert) => {
 		insert(advert);
 
 		if (process.env.SEND_MESSAGE === 'true') {
-			await sendMessage(page)
+			
+			console.log(process.env.SEND_MESSAGE)
+			//await sendMessage(page)
 		}
 	} catch (error) {
 		console.log(error)
